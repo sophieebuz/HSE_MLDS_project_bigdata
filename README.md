@@ -1,1 +1,1 @@
-# Owner-avatar-HSE_MLDS_project_bigdata
+# HSE_MLDS_project_bigdata
