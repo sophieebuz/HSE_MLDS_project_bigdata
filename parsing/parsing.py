@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-from tqdm.notebook import tqdm
 import pandas as pd
 import time
 from datetime import datetime 

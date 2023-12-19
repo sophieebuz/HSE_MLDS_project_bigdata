@@ -1,3 +1,5 @@
+import sys
+sys.path.append("/opt/hadoop/airflow/dags/bol_theater/HSE_MLDS_project_bigdata")
 from airflow.models import DAG
 from airflow.operators.python_operator import PythonOperator
 
@@ -21,6 +23,6 @@ dag = DAG(
     default_args=DEFAULT_ARGS
 )
 
-task_get_data = PythonOperator(task_id="get_data", python_callable=pasing.main, dag=dag)
+task_get_data = PythonOperator(task_id="get_data", python_callable=parsing.get_data, dag=dag)
 
 task_get_data
