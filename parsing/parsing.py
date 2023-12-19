@@ -95,7 +95,7 @@ def get_data():
     df_spark = spark.createDataFrame(df)
     now = datetime.now()
     time_parse = now.strftime("%Y-%m-%d-%H-%M-%S")
-    df_spark.repartition(1).write.mode('overwrite').parquet('data/' + time_parse)
+    df_spark.repartition(1).write.mode('overwrite').parquet('/user/sofibuz/data/' + time_parse)
     
 
 if __name__ == "__main__":
