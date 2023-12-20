@@ -1,7 +1,10 @@
 import sys
 sys.path.append("/opt/hadoop/airflow/dags/bol_theater/HSE_MLDS_project_bigdata")
+from datetime import timedelta
+
 from airflow.models import DAG
 from airflow.operators.python_operator import PythonOperator
+from airflow.utils.dates import days_ago
 
 from parsing import parsing
 
