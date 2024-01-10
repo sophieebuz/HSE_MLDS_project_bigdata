@@ -1,10 +1,11 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
+from pyspark.sql import SparkSession
 import pandas as pd
 
 
-def parsing_performances(tree):
+def get_performances(tree):
     cols = ['date', 'day_of_week', 'type', 'name', 'age', 'time', 'scene', 'tickets', 'price']
     performances = {col: [] for col in cols}
 
@@ -40,7 +41,7 @@ def parsing_performances(tree):
     except:
         print('Error parsing')
 
-    return performances
+    return pd.DataFrame(performances)
 
 
 chrome_options = Options()
@@ -51,5 +52,14 @@ url = "https://bolshoi.ru/timetable/all"
 driver.get(url)
 tree = BeautifulSoup(driver.page_source, 'html.parser')
 driver.quit()
-performances = parsing_performances(tree)
-print(pd.DataFrame(performances)[-10:])
+
+pd_df_performances = get_performances(tree)
+
+spark = SparkSession.builder\
+        .master("local[*]")\
+        .appName('Bolshoi_Theatre')\
+        .getOrCreate()
+
+df_performances = spark.createDataFrame(pd_df_performances)
+
+print(df_performances)
