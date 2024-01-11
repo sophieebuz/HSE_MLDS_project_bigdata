@@ -2,8 +2,24 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from pyspark.sql import SparkSession
+from datetime import datetime
+from pyspark.sql.functions import lit
 import pandas as pd
 import time
+
+
+def parsing_data(url):
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--no-sandbox')
+    driver = webdriver.Chrome(options=chrome_options)
+    driver.get(url)
+    # задержка нужна для прогрузки страницы
+    time.sleep(2)
+    tree = BeautifulSoup(driver.page_source, 'html.parser')
+    driver.quit()
+
+    return tree
 
 
 def get_performances(tree):
@@ -45,25 +61,28 @@ def get_performances(tree):
     return pd.DataFrame(performances)
 
 
-chrome_options = Options()
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--no-sandbox')
-driver = webdriver.Chrome(options=chrome_options)
-url = "https://bolshoi.ru/timetable/all"
-
-driver.get(url)
-# задержка нужна для прогрузки страницы
-time.sleep(2)
-tree = BeautifulSoup(driver.page_source, 'html.parser')
-driver.quit()
-
-pd_df_performances = get_performances(tree)
-
-spark = SparkSession.builder\
+def create_performances_parquet(pd_df_performances, parquet_path):
+    spark = SparkSession.builder\
         .master("local[*]")\
         .appName('Bolshoi_Theatre')\
         .getOrCreate()
 
-df_performances = spark.createDataFrame(pd_df_performances)
+    df_performances = spark.createDataFrame(pd_df_performances)
 
-print(df_performances)
+    time_parse = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+
+    df_performances\
+        .withColumn("time_parse", lit(time_parse))\
+        .repartition(1)\
+        .write\
+        .mode('overwrite')\
+        .parquet(parquet_path)
+
+
+if __name__ == "__main__":
+    url = "https://bolshoi.ru/timetable/all"
+    parquet_path = "/user/sofibuz/data/"
+
+    tree = parsing_data()
+    pd_df_performances = get_performances(tree)
+    create_performances_parquet(pd_df_performances, parquet_path)
