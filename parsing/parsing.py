@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from pyspark.sql import SparkSession
 import pandas as pd
+import time
 
 
 def get_performances(tree):
@@ -49,7 +50,10 @@ chrome_options.add_argument('--headless')
 chrome_options.add_argument('--no-sandbox')
 driver = webdriver.Chrome(options=chrome_options)
 url = "https://bolshoi.ru/timetable/all"
+
 driver.get(url)
+# задержка нужна для прогрузки страницы
+time.sleep(2)
 tree = BeautifulSoup(driver.page_source, 'html.parser')
 driver.quit()
 
