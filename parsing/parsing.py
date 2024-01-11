@@ -43,7 +43,7 @@ def get_performances(tree):
                 tickets = event.find('div', {'class': 'PosterCard-tickets'})\
                       or event.find('button', {'class': 'RoundedButton PosterCard-button isDisabled'})\
                       or event.find('button', {'class': 'RoundedButton PosterCard-button isTransparentBlack'})
-                
+  
                 price = event.find('div', {'class': 'PosterCard-price'})
 
                 performances['date'].append(None if date is None else date.text)
@@ -79,10 +79,14 @@ def create_performances_parquet(pd_df_performances, parquet_path):
         .parquet(parquet_path)
 
 
-if __name__ == "__main__":
+def load_performances():
     url = "https://bolshoi.ru/timetable/all"
     parquet_path = "/user/sofibuz/data/"
 
-    tree = parsing_data()
+    tree = parsing_data(url)
     pd_df_performances = get_performances(tree)
     create_performances_parquet(pd_df_performances, parquet_path)
+
+
+if __name__ == "__main__":
+    load_performances()
