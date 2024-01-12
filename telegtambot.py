@@ -53,7 +53,7 @@ except:
     pass
 
 
-bot = telebot.TeleBot("6688259580:AAH6h-QJAtTleEF13bHpdVzLEK8MrDVjCh0")
+bot = telebot.TeleBot("")
 
 @bot.message_handler(commands=['start'])
 def send_start_message(message):
