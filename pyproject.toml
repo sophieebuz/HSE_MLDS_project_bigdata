@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "hse-mlds-project-bigdata"
+version = "0.1.0"
+description = ""
+authors = ["Sophie Buzaeva <sofibuz@mail.ru>"]
+readme = "README.md"
+packages = [{include = "hse_mlds_project_bigdata"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+selenium = "^4.16.0"
+beautifulsoup4 = "^4.12.2"
+pandas = "^2.1.4"
+pytelegrambotapi = "^4.14.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
