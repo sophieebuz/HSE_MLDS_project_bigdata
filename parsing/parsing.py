@@ -1,11 +1,12 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
-from pyspark.sql import SparkSession
+#from pyspark.sql import SparkSession
 from datetime import datetime
-from pyspark.sql.functions import lit
+#from pyspark.sql.functions import lit
 import pandas as pd
 import time
+import os
 
 
 def parsing_data(url):
@@ -62,21 +63,23 @@ def get_performances(tree):
 
 
 def create_performances_parquet(pd_df_performances, parquet_path):
-    spark = SparkSession.builder\
-        .master("local[*]")\
-        .appName('Bolshoi_Theatre')\
-        .getOrCreate()
-
-    df_performances = spark.createDataFrame(pd_df_performances)
+    # spark = SparkSession.builder\
+    #     .master("local[*]")\
+    #     .appName('Bolshoi_Theatre')\
+    #     .getOrCreate()
+    #
+    # df_performances = spark.createDataFrame(pd_df_performances)
 
     time_parse = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
-    df_performances\
-        .withColumn("time_parse", lit(time_parse))\
-        .repartition(1)\
-        .write\
-        .mode('overwrite')\
-        .parquet(parquet_path)
+    # df_performances\
+    #     .withColumn("time_parse", lit(time_parse))\
+    #     .repartition(1)\
+    #     .write\
+    #     .mode('overwrite')\
+    #     .parquet(parquet_path)
+
+    return pd_df_performances
 
 
 def load_performances():
@@ -85,8 +88,14 @@ def load_performances():
 
     tree = parsing_data(url)
     pd_df_performances = get_performances(tree)
-    create_performances_parquet(pd_df_performances, parquet_path)
+    df = create_performances_parquet(pd_df_performances, parquet_path)
+    return df
 
 
 if __name__ == "__main__":
-    load_performances()
+    df = load_performances()
+
+    if not os.path.isdir("data"):
+        os.mkdir("data")
+    df.to_csv("data/dftest.csv", index=False)
+    #print(df.head())

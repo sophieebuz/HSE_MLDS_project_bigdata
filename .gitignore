@@ -2,3 +2,5 @@
 .idea
 /data
 bolshoi_theater.db
+TOKEN.py
+__pycache__/
