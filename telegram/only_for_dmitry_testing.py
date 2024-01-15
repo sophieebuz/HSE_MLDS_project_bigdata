@@ -142,7 +142,7 @@ try:
         password='password57',
         database='hse'
     ) as connection:
-        select_movies_query = "SELECT * FROM performances"
+        select_movies_query = "SHOW TABLES"
         with connection.cursor() as cursor:
             cursor.execute(select_movies_query)
             result = cursor.fetchall()
