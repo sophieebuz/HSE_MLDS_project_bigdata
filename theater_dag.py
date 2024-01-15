@@ -1,5 +1,5 @@
 import sys
-sys.path.append("/opt/hadoop/airflow/dags/bol_theater/HSE_MLDS_project_bigdata")
+sys.path.append("/opt/hadoop/airflow/dags/theater/HSE_MLDS_project_bigdata")
 
 from airflow.operators.python_operator import PythonOperator
 from airflow.decorators import task
@@ -16,7 +16,7 @@ from telegram.send_push_message import send_push_messages
 
 
 with DAG(
-    dag_id="bolshoi_theater",
+    dag_id="theater",
     catchup=False,
     default_args=airflow_args
 ) as dag:
@@ -37,12 +37,10 @@ with DAG(
         upload_data_to_mysql(parquet_paths['performances'], db_params, 'bth_performances')
         upload_data_to_mysql(parquet_paths['notifications'], db_params, 'bth_notifications')
     
-    # @task(task_id="send_push_message")
-    # def send_push_message(**kwargs):
-    #     send_push_messages()
 
-    
+    @task(task_id="send_push_message")
+    def send_push_message(**kwargs):
+        send_push_messages(db_params)
 
 
-    load_data() >> process_data() >> upload_data_to_database() 
-    #>> send_push_message()
+    load_data() >> process_data() >> upload_data_to_database() >> send_push_message()

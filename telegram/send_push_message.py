@@ -1,28 +1,25 @@
-import sys
-sys.path.append("/opt/hadoop/airflow/dags/bol_theater/HSE_MLDS_project_bigdata")
-
 from mysql.connector import connect
-from configs.db_params import db_params
-
-from telegram.telegtambot import send_message
+from telegram.telegram_bot import send_message
 
 
-def send_push_messages():
+def send_push_messages(db_params):
      conn = connect(
-            host="localhost",
+            host='localhost',
             user=db_params['user'],
             password=db_params['password'],
             database='hse')
 
      cursor = conn.cursor()
 
-     query_join_perf = """SELECT p.date, p.day_of_week, p.type, p.name, p.age, p.time, p.scene, p.tickets, p.price, n.message, s.chat_id
-                          FROM bth_notifications n
-                          JOIN bth_performances p ON n.date = p.date AND n.time = p.time AND n.name = p.name 
-                          JOIN bth_subscribes s ON n.name = s.perf_name
+     query_join_perf = """
+                         SELECT p.date, p.day_of_week, p.type, p.name, p.age, p.time, p.scene, p.tickets, p.price, n.message, s.chat_id
+                         FROM bth_notifications n
+                         JOIN bth_performances p ON n.date = p.date AND n.time = p.time AND n.name = p.name 
+                         JOIN bth_subscribes s ON n.name = s.perf_name
                        """
 
-     query_join_day = """SELECT p.date, p.day_of_week, p.type, p.name, p.age, p.time, p.scene, p.tickets, p.price, n.message, s.chat_id
+     query_join_day = """
+                         SELECT p.date, p.day_of_week, p.type, p.name, p.age, p.time, p.scene, p.tickets, p.price, n.message, s.chat_id
                          FROM bth_notifications n
                          JOIN bth_performances p ON n.date = p.date AND n.time = p.time AND n.name = p.name 
                          JOIN bth_subscribes s ON p.day_of_week = s.day_of_week

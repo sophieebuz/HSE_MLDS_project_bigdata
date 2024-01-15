@@ -142,12 +142,22 @@ try:
         password='password57',
         database='hse'
     ) as connection:
-        select_movies_query = "SHOW TABLES"
         with connection.cursor() as cursor:
-            cursor.execute(select_movies_query)
+            cursor.execute("SHOW TABLES")
             result = cursor.fetchall()
             for row in result:
                 print(row)
+
+            cursor.execute("describe bth_performances")
+            result = cursor.fetchall()
+            for row in result:
+                print(row)
+
+            cursor.execute("describe bth_notifications")
+            result = cursor.fetchall()
+            for row in result:
+                print(row)
+
 
 except Error as e:
     print(e)

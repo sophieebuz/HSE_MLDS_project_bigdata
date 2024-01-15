@@ -1,11 +1,12 @@
-import sys
-sys.path.append("/opt/hadoop/airflow/dags/bol_theater/HSE_MLDS_project_bigdata")
-
 from mysql.connector import connect
-from configs.db_params import db_params
+
+db_params = {
+    'user': 'arhimag',
+    'password': 'password57',
+}
 
 conn = connect(
-            host="localhost",
+            host='localhost',
             user=db_params['user'],
             password=db_params['password'],
             database='hse')
