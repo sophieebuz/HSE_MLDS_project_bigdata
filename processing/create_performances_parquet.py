@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col
-from pyspark.sql.types import IntegerType, StringType
+from pyspark.sql.types import IntegerType
 import pathlib
 import re
 
@@ -41,15 +41,6 @@ def create_performances_parquet(parquet_paths):
     df_performances = spark.read.parquet(parquet_paths['parsing'])
 
     df_performances\
-        .withColumn('date', col('date').cast(StringType))\
-        .withColumn('day_of_week', col('day_of_week').cast(StringType))\
-        .withColumn('type', col('type').cast(StringType))\
-        .withColumn('name', col('name').cast(StringType))\
-        .withColumn('age', col('age').cast(StringType))\
-        .withColumn('time', col('time').cast(StringType))\
-        .withColumn('scene', col('scene').cast(StringType))\
-        .withColumn('tickets', col('tickets').cast(StringType))\
-        .withColumn('price', col('price').cast(StringType))\
         .withColumn('tickets_num', tickets_num(col("tickets")))\
         .withColumn('min_price', min_price(col("price")))\
         .withColumn('max_price', max_price(col("price")))\

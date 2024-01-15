@@ -1,18 +1,20 @@
-import sys
-sys.path.append("/opt/hadoop/airflow/dags/bol_theater/HSE_MLDS_project_bigdata")
-
 from mysql.connector import connect
-from configs.db_params import db_params
 import telebot
 from telebot import types
 import sqlite3
 import datetime
 
 import pandas as pd
-from telegram.TOKEN import token
 from notifiers import get_notifier
 import json
 
+
+token = '6688259580:AAEAlQMwdi9UYZ6DbCwXCITLGyU-K3fbXiQ'
+
+db_params = {
+    'user': 'arhimag',
+    'password': 'password57',
+}
 
 # подключаем базу данных
 # conn = sqlite3.connect('bolshoi_theater.db')
@@ -437,4 +439,5 @@ def show_list_of_performances(message):
            "/change_mylist - изменить подписку"
     bot.send_message(message.chat.id, text=text)
 
-bot.polling(none_stop=True)
+if __name__ == '__main__':
+    bot.polling(none_stop=True)
