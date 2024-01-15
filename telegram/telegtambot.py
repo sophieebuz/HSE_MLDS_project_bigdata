@@ -24,7 +24,7 @@ try:
                PRIMARY KEY (\"chat_id\"))"""
     cursor.execute(query1)
 
-    df = pd.read_csv('data/dftest.csv')
+    df = pd.read_csv('../data/dftest.csv')
     df.to_sql(name='performances', con=conn)
     conn.commit()
 
