@@ -1,6 +1,6 @@
 .venv
 .idea
 /data
-bolshoi_theater.db
-TOKEN.py
+telegram/bolshoi_theater.db
+telegram/TOKEN.py
 __pycache__/

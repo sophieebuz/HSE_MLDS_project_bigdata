@@ -33,8 +33,8 @@ with DAG(
 
     @task(task_id="upload_data_to_database")
     def upload_data_to_database(**kwargs):
-        upload_data_to_mysql(parquet_paths['performances'], db_params, 'performances')
-        upload_data_to_mysql(parquet_paths['notifications'], db_params, 'notifications')
+        upload_data_to_mysql(parquet_paths['performances'], db_params, 'bth_performances')
+        upload_data_to_mysql(parquet_paths['notifications'], db_params, 'bth_notifications')
 
 
     load_data() >> process_data() >> upload_data_to_database()
