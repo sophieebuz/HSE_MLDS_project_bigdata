@@ -1,7 +1,8 @@
 import pandas as pd
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
-from mysql.connector import connect, Error
+from pyspark.sql.types import StringType
+from mysql.connector import connect
 from processing.notification_rules import tickets_appeared, tickets_appeared_message, few_tickets, few_tickets_message
 
 
@@ -47,6 +48,10 @@ def create_notifications_parquet(parquet_paths, db_params):
         .orderBy(col('date'), col('time'))
 
     notifications\
+        .withColumn('date', col('date').cast(StringType))\
+        .withColumn('time', col('time').cast(StringType))\
+        .withColumn('name', col('name').cast(StringType))\
+        .withColumn('message', col('message').cast(StringType))\
         .repartition(1)\
         .write\
         .mode('overwrite')\
