@@ -18,3 +18,6 @@
 
 # Компоненты системы
 ![img1](https://github.com/sophieebuz/HSE_MLDS_project_bigdata/blob/main/docs/scheme_project.jpg)
+
+Логическая схема БД (нотация "Вороньи лапки")
+![img1](https://github.com/sophieebuz/HSE_MLDS_project_bigdata/blob/main/docs/logic_model_DB.jpg)
