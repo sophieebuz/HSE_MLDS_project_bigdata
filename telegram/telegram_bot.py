@@ -1,134 +1,22 @@
 from mysql.connector import connect
 import telebot
 from telebot import types
-import sqlite3
 import datetime
+import argparse
 
-import pandas as pd
-from notifiers import get_notifier
-import json
+parser = argparse.ArgumentParser()
+parser.add_argument('--user', type=str, required=True, help="DB user")
+parser.add_argument('--password', type=str, required=True, help="DB password")
+parser.add_argument('--token', type=str, required=True, help="Telegram bot token")
+args = parser.parse_args()
 
 
-token = '6688259580:AAEAlQMwdi9UYZ6DbCwXCITLGyU-K3fbXiQ'
+token = args.token
 
 db_params = {
-    'user': 'arhimag',
-    'password': 'password57',
+    'user': args.user,
+    'password': args.password,
 }
-
-# подключаем базу данных
-# conn = sqlite3.connect('bolshoi_theater.db')
-# cursor = conn.cursor()
-# cursor.execute("DROP TABLE users")
-# cursor.execute("DROP TABLE performances")
-
-
-# try:
-#     query1 = """CREATE TABLE \"users\" (
-#                \"chat_id\" INTEGER UNIQUE,
-#                \"fisrt_name\" TEXT NOT NULL,
-#                \"nickname\" TEXT,
-#                \"birthday\" DATE NOT NULL,
-#                PRIMARY KEY (\"chat_id\"))"""
-#     cursor.execute(query1)
-
-#     df = pd.read_csv('../data/dftest.csv')
-#     df.to_sql(name='performances', con=conn)
-#     conn.commit()
-
-#     query2 = """CREATE TABLE \"subscribes\" (
-#                \"chat_id\" INTEGER NOT NULL,
-#                \"perf_name\" TEXT,
-#                \"day_of_week\" TEXT,
-#                \"day\" TEXT,
-#                CONSTRAINT name_unique UNIQUE (\"chat_id\", \"perf_name\"),
-#                CONSTRAINT day_unique UNIQUE (\"chat_id\", \"day_of_week\"))"""
-#     cursor.execute(query2)
-
-
-#     # query2 = """CREATE TABLE \"performances\" (
-#     #            \"date\" TEXT NOT NULL,
-#     #            \"day_of_week\" TEXT NOT NULL,
-#     #            \"type\" TEXT NOT NULL,
-#     #            \"name\" TEXT NOT NULL,
-#     #            \"age\" TEXT NOT NULL,
-#     #            \"time\" TEXT NOT NULL,
-#     #            \"scene\" TEXT NOT NULL,
-#     #            \"tickets\" TEXT NOT NULL,
-#     #            \"price\" TEXT)"""
-#     # cursor.execute(query2)
-
-# except:
-#     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-#     print(cursor.fetchall())
-
-#     cursor.execute("SELECT * FROM performances LIMIT 1")
-#     print(cursor.fetchall())
-#     # cursor.execute('DELETE FROM users')
-#     # conn.commit()
-#     # date = datetime.date(2000, 5, 23)
-#     # cursor.execute("INSERT INTO users (user_id, fisrt_name, nickname, birthday)\
-#     #                   VALUES (502830635, \"Sophie\", \"ethee_real\", \"2000-05-23\")")
-#     # conn.commit()
-#     # cursor.execute("SELECT * FROM users")
-#     # print(cursor.fetchall())
-#     pass
-
-
-'''
-# query3 = """CREATE TABLE \"testtable\" (
-#                \"perf_name\" TEXT NOT NULL)"""
-# cursor.execute(query3)
-
-# cursor.execute("SELECT * FROM testtable")
-# #print(cursor.fetchall())
-# 
-# for row in cursor.fetchall():
-#     print(json.loads(row[0]))
-
-
-# array1 = ["aaa", "bbb", "ddd"]
-# array2 = ["aaa1", "bbb1", "ddd1"]
-# jarray1 = json.dumps((array1))
-# jarray2 = json.dumps((array2))
-
-
-# cursor.execute("INSERT INTO testtable (perf_name) VALUES ('" + jarray2 + "')")
-# conn.commit()
-
-# cursor.execute("SELECT * FROM testtable")
-# print(cursor.fetchall())
-'''
-
-conn = connect(
-            host="localhost",
-            user=db_params['user'],
-            password=db_params['password'],
-            database='hse')
-
-cursor = conn.cursor()
-# # cursor.execute("DELETE FROM bth_users WHERE chat_id=502830635")
-# # print(cursor.fetchall())
-# # conn.commit()
-cursor.execute("SELECT * FROM bth_subscribes")
-print(cursor.fetchall())
-
-# cursor.execute('INSERT INTO bth_users (chat_id, fisrt_name, nickname, birthday)\
-#                 VALUES (%s, %s, %s, %s)', (1, "A", None, "2023-04-04"))
-# conn.commit()
-# cursor.execute('INSERT INTO bth_users (chat_id, fisrt_name, nickname, birthday)\
-#                 VALUES (%s, %s, %s, %s)', (1, "A", None, "2023-04-04"))
-# conn.commit()
-
-
-# cursor = conn.cursor()
-# cursor.execute("SELECT * FROM bth_performances")
-# print(cursor.fetchall())
-# cursor.execute("SELECT * FROM bth_users")
-# print(cursor.fetchall())
-# cursor.execute("SELECT * FROM bth_subscribes")
-# print(cursor.fetchall())
-
 
 
 bot = telebot.TeleBot(token)
@@ -144,7 +32,6 @@ def send_start_message(message):
     keyboard.add(itembtn1)
     bot.send_message(message.from_user.id, text=text1)
     bot.send_message(message.from_user.id, text=text2, reply_markup=keyboard)
-    # print(message.from_user.first_name, message.from_user.username, message.from_user.last_name)
 
 @bot.callback_query_handler(func=lambda call: call.data == 'registry')
 def callback(call):
@@ -168,9 +55,6 @@ def callback_user_registry(call):
                     cursor.execute('INSERT INTO bth_users (chat_id, fisrt_name, nickname, birthday)\
                                     VALUES (%s, %s, %s, %s)', (call.chat.id, call.from_user.first_name, call.from_user.username, call.text))
                     con.commit()
-
-                    cursor.execute("SELECT * FROM bth_users")
-                    print(cursor.fetchall())
                 bot.send_message(call.chat.id, text="Вы успешно зарегистрированы!")
                 bot.send_message(call.chat.id, text="Для того, чтобы подписаться на конкретные спектакли, введите команду /list")
             except:
@@ -181,14 +65,12 @@ def callback_user_registry(call):
         msg = bot.send_message(call.chat.id, text=text)
         bot.register_next_step_handler(msg, callback_user_registry)
 
-
-
-
 def get_plans_string(tasks):
     tasks_str = []
     for val in list(enumerate(tasks)):
         tasks_str.append(str(val[0] + 1) + ') ' + val[1][0] + '\n')
     return ''.join(tasks_str)
+
 
 @bot.message_handler(commands=['list'])
 def show_list_of_performances(message):
@@ -196,7 +78,6 @@ def show_list_of_performances(message):
         cursor = con.cursor()
         cursor.execute("SELECT DISTINCT name FROM bth_performances")
         tasks = get_plans_string(cursor.fetchall())
-#        bot.send_message(message.chat.id, text=tasks)
 
         keyboard = types.InlineKeyboardMarkup(row_width=1)
         itembtn1 = types.InlineKeyboardButton(text="Подписаться на спектакль", callback_data='subscribe_perf')
@@ -241,7 +122,6 @@ def callback_subscribe(call):
         text = "Чтобы получить возможно добавлять день недели в подписку - зарегистируйтесь.\n" \
                "Для этого введите команду /start."
         bot.send_message(call.message.chat.id, text=text)
-
 
 def callback_added_subscribe_perf(call):
     try:
@@ -294,8 +174,6 @@ def callback_added_subscribe_day(call):
                         f'Чтобы посмотреть, о каких днях недели вы получаете уведомления, вызовите команду /mylist'
                     bot.send_message(call.chat.id, text=text)
 
-                    # cursor.execute("SELECT * FROM subscribes")
-                    # print(cursor.fetchall())
             except:
                 text = "Вы уже получаете уведомления о всех спектаклях, проходящих в этот день недели.\n" \
                        "Если хотите изменить настройки вашей подписки вызовите команду /change_mylist."
@@ -306,7 +184,6 @@ def callback_added_subscribe_day(call):
         text = "Проверьте, что такой номер дня недели существует в списке. Введите номер правильно."
         msg = bot.send_message(call.chat.id, text=text)
         bot.register_next_step_handler(msg, callback_added_subscribe_day)
-
 
 @bot.message_handler(commands=['mylist'])
 def show_person_list(message):
@@ -395,9 +272,6 @@ def callback_change_person_list(call):
         except:
             bot.send_message(call.chat.id, 'Что то пошло не так')
 
-
-
-
 # ---------------------------------------------------------
 def get_message_string(info_general, info_added, subscribe, type_of_subs):
     tasks_str = []
@@ -411,24 +285,7 @@ def get_message_string(info_general, info_added, subscribe, type_of_subs):
 def send_message(push_message, subscribe, type_of_subs):
     message_text = get_message_string(push_message[:-2], push_message[-2:-1], subscribe, type_of_subs)
     bot.send_message(chat_id=push_message[-1], text=message_text, parse_mode="Markdown")
-
-# def send_message(push_message, subscribe):
-#     telegram = get_notifier("telegram")
-#     message_text = get_message_string(push_message[:-2], push_message[-2:-1], subscribe)
-#     telegram.notify(token=token, chat_id=push_message[-1], message=message_text, parse_mode="markdown")
-
-
-# def send_message(text='Это push уведомление'):
-#     telegram = get_notifier("telegram")
-#     message_text = text
-#     telegram.notify(token=token, chat_id=chat_id, message=message_text)
-
-# import time
-# print("Ждем 10 сек")
-# time.sleep(10)
-# send_message()
 # ---------------------------------------------------------
-
 
 @bot.message_handler(commands=['help'])
 def show_list_of_performances(message):
@@ -440,4 +297,5 @@ def show_list_of_performances(message):
     bot.send_message(message.chat.id, text=text)
 
 if __name__ == '__main__':
+    print('Telegram bot started...')
     bot.polling(none_stop=True)
