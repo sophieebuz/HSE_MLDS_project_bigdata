@@ -4,21 +4,7 @@ from telebot import types
 import datetime
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--user', type=str, required=True, help="DB user")
-parser.add_argument('--password', type=str, required=True, help="DB password")
-parser.add_argument('--token', type=str, required=True, help="Telegram bot token")
-args = parser.parse_args()
-
-
-token = args.token
-
-db_params = {
-    'user': args.user,
-    'password': args.password,
-}
-
-
+token = '' # insert your token
 bot = telebot.TeleBot(token)
 
 @bot.message_handler(commands=['start'])
@@ -311,6 +297,17 @@ def show_list_of_performances(message):
            "/change_mylist - изменить подписку"
     bot.send_message(message.chat.id, text=text)
 
+
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--user', type=str, required=True, help="DB user")
+    parser.add_argument('--password', type=str, required=True, help="DB password")
+    args = parser.parse_args()
+
+    db_params = {
+        'user': args.user,
+        'password': args.password,
+    }
+
     print('Telegram bot started...')
     bot.polling(none_stop=True)

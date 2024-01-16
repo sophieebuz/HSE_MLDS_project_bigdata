@@ -8,6 +8,6 @@ airflow_args = {
     'email_on_retry': False,
     'retries': 3,
     'retry_delay': timedelta(minutes=5),
-    'schedule_interval': '@hourly',
+    'schedule_interval': '0 * * * *',
     'tags': ['bolshoi_theater'],
 }
