@@ -8,7 +8,7 @@ from configs.airflow_args import airflow_args
 from configs.constants import parsing_url
 from configs.parquet_paths import parquet_paths
 from configs.db_params import db_params
-from parsing.load_data import load_performances, mock_load_performances
+from parsing.load_data import load_performances
 from processing.create_notifications_parquet import create_notifications_parquet
 from processing.create_performances_parquet import create_performances_parquet
 from processing.upload_data_to_mysql import upload_data_to_mysql
@@ -22,8 +22,7 @@ with DAG(
 ) as dag:
     @task(task_id="load_data")
     def load_data(**kwargs):
-        # не забыть удалить
-        mock_load_performances(parsing_url, parquet_paths['parsing'])
+        load_performances(parsing_url, parquet_paths['parsing'])
 
 
     @task(task_id="process_data")
