@@ -17,4 +17,4 @@
 
 
 # Компоненты системы
-![img1]()
+![img1](https://github.com/sophieebuz/HSE_MLDS_project_bigdata/blob/main/docs/scheme_project.jpg)
