@@ -1,5 +1,5 @@
 parquet_paths = {
-    'parsing': 'hdfs:///user/sofibuz/proj/parsing',
-    'performances': 'hdfs:///user/sofibuz/proj/performances',
-    'notifications': 'hdfs:///user/sofibuz/proj/notifications',
+    'parsing': 'hdfs:///user/sofibuz/project/parsing',
+    'performances': 'hdfs:///user/sofibuz/project/performances',
+    'notifications': 'hdfs:///user/sofibuz/project/notifications',
 }
