@@ -12,7 +12,7 @@ from parsing.load_data import load_performances, mock_load_performances
 from processing.create_notifications_parquet import create_notifications_parquet
 from processing.create_performances_parquet import create_performances_parquet
 from processing.upload_data_to_mysql import upload_data_to_mysql
-from telegram.send_push_message import send_push_messages
+from telegram.send_push_messages import send_push_messages_to_telegram
 
 
 with DAG(
@@ -38,9 +38,9 @@ with DAG(
         upload_data_to_mysql(parquet_paths['notifications'], db_params, 'bth_notifications')
     
 
-    @task(task_id="send_push_message")
-    def send_push_message(**kwargs):
-        send_push_messages(db_params)
+    @task(task_id="send_push_messages")
+    def send_push_messages(**kwargs):
+        send_push_messages_to_telegram(db_params)
 
 
-    load_data() >> process_data() >> upload_data_to_database() >> send_push_message()
+    load_data() >> process_data() >> upload_data_to_database() >> send_push_messages()
