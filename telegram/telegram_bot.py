@@ -33,11 +33,13 @@ def send_start_message(message):
     bot.send_message(message.from_user.id, text=text1)
     bot.send_message(message.from_user.id, text=text2, reply_markup=keyboard)
 
+
 @bot.callback_query_handler(func=lambda call: call.data == 'registry')
 def callback(call):
     text = "Укажите год, месяц и день вашего рождения в формате гггг-мм-дд"
     msg = bot.send_message(call.message.chat.id, text=text)
     bot.register_next_step_handler(msg, callback_user_registry)
+
 
 def callback_user_registry(call):
     try:
@@ -65,6 +67,7 @@ def callback_user_registry(call):
         msg = bot.send_message(call.chat.id, text=text)
         bot.register_next_step_handler(msg, callback_user_registry)
 
+
 def get_plans_string(tasks):
     tasks_str = []
     for val in list(enumerate(tasks)):
@@ -85,6 +88,7 @@ def show_list_of_performances(message):
         keyboard.add(itembtn1, itembtn2)
         bot.send_message(message.chat.id, text=tasks, reply_markup=keyboard)
 
+
 @bot.callback_query_handler(func=lambda call: call.data == 'subscribe_perf')
 def callback_subscribe(call):
     with connect(host="localhost", user=db_params['user'], password=db_params['password'], database='hse') as con:
@@ -99,6 +103,7 @@ def callback_subscribe(call):
         text = "Чтобы получить возможно добавлять спектакль в подписку - зарегистируйтесь.\n" \
                "Для этого введите команду /start."
         bot.send_message(call.message.chat.id, text=text)
+
 
 @bot.callback_query_handler(func=lambda call: call.data == 'subscribe_day')
 def callback_subscribe(call):
@@ -122,6 +127,7 @@ def callback_subscribe(call):
         text = "Чтобы получить возможно добавлять день недели в подписку - зарегистируйтесь.\n" \
                "Для этого введите команду /start."
         bot.send_message(call.message.chat.id, text=text)
+
 
 def callback_added_subscribe_perf(call):
     try:
@@ -155,6 +161,7 @@ def callback_added_subscribe_perf(call):
         msg = bot.send_message(call.chat.id, text=text)
         bot.register_next_step_handler(msg, callback_added_subscribe_perf)
 
+
 def callback_added_subscribe_day(call):
     try:
         check_correct_num = True if 1 <= int(call.text) <= 7 else False
@@ -185,6 +192,7 @@ def callback_added_subscribe_day(call):
         msg = bot.send_message(call.chat.id, text=text)
         bot.register_next_step_handler(msg, callback_added_subscribe_day)
 
+
 @bot.message_handler(commands=['mylist'])
 def show_person_list(message):
     chat_id = message.chat.id
@@ -199,6 +207,7 @@ def show_person_list(message):
     text = "*Спектакли:*\n" + tasks1 + "\n*Дни недели:*\n" + tasks2
     bot.send_message(message.chat.id, text=text, parse_mode="Markdown")
 
+
 @bot.message_handler(commands=['change_mylist'])
 def change_person_list(message):
     text = "Чтобы бы вы хотели изменить в вашей подписке?"
@@ -210,6 +219,7 @@ def change_person_list(message):
                      text=text, reply_markup=keyboard)
     bot.register_next_step_handler(msg, callback_change_person_list)
 
+
 def delete_perf(call):
     with connect(host="localhost", user=db_params['user'], password=db_params['password'], database='hse') as con:
         cursor = con.cursor()
@@ -220,6 +230,7 @@ def delete_perf(call):
     text = "Укажите номер спектакля, который хотите удалить\n\n" + tasks1
     msg = bot.send_message(call.chat.id, text=text)
     bot.register_next_step_handler(msg, delete_perf_)
+
 
 def delete_perf_(msg):
     perf = int(msg.text)
@@ -234,6 +245,7 @@ def delete_perf_(msg):
         con.commit()
         bot.send_message(msg.chat.id, text=f'Спектакль "{perf_name}" удален из подписки. Больше вы не будете получать о нем уведомлений')
 
+
 def delete_day_of_week(call):
     with connect(host="localhost", user=db_params['user'], password=db_params['password'], database='hse') as con:
         cursor = con.cursor()
@@ -244,6 +256,7 @@ def delete_day_of_week(call):
     text = "Укажите день недели, который хотите удалить\n\n" + tasks2
     msg = bot.send_message(call.chat.id, text=text)
     bot.register_next_step_handler(msg, delete_day_of_week_)
+
 
 def delete_day_of_week_(msg):
     num_day = int(msg.text)
@@ -273,6 +286,8 @@ def callback_change_person_list(call):
             bot.send_message(call.chat.id, 'Что то пошло не так')
 
 # ---------------------------------------------------------
+# Функция с пушами
+
 def get_message_string(info_general, info_added, subscribe, type_of_subs):
     tasks_str = []
     tasks_str.append(f'*{subscribe}: {type_of_subs}*' + '\n')
