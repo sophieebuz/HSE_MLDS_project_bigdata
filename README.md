@@ -13,7 +13,7 @@
 1. производит регулярную загрузку данных c [сайта Большого театра](https://bolshoi.ru/timetable/all) в хранилище
 2. обрабатывает эти данные в хранилище
 3. отправляет уведомления об измениях в Telegram Bot
-4. построение графиков с аналитикой в [Yandex Datalens](https://datalens.yandex.ru/e7j0uel08p0c2-dashbord-bolshoy-teatr)
+4. построение графиков с аналитикой в [Yandex Datalens](https://datalens.yandex/e7j0uel08p0c2)
 
 
 # Компоненты системы
