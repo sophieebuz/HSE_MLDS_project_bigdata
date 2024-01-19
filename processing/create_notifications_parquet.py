@@ -14,6 +14,9 @@ def create_notifications_parquet(parquet_paths, db_params):
             database='hse'
         ) as connection:
             pd_before_perf = pd.read_sql('SELECT * from bth_performances', connection)
+            
+            if len(pd_before_perf) == 0:
+                return
     except:
         print('First load data, notifications not needed')
         return

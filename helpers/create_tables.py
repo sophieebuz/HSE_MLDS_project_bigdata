@@ -15,7 +15,7 @@ conn = connect(
 cursor = conn.cursor()
 
 try:
-    query1 = """
+    query_users = """
             CREATE TABLE bth_users (
                 chat_id BIGINT UNIQUE,
                 fisrt_name TEXT NOT NULL,
@@ -24,9 +24,9 @@ try:
                 PRIMARY KEY (chat_id)
             )
             """
-    cursor.execute(query1)
+    cursor.execute(query_users)
 
-    query2 = """
+    query_subscribes = """
             CREATE TABLE bth_subscribes (
                 chat_id BIGINT NOT NULL,
                 perf_name VARCHAR(255),
@@ -35,7 +35,35 @@ try:
                 CONSTRAINT day_unique UNIQUE (chat_id, day_of_week)
             )
             """
-    cursor.execute(query2)
+    cursor.execute(query_subscribes)
+
+    query_performances = """
+            CREATE TABLE bth_performances (
+                date TEXT NOT NULL,
+                day_of_week TEXT,
+                type TEXT,
+                name TEXT NOT NULL,
+                age TEXT,
+                time TEXT NOT NULL,
+                scene TEXT,
+                tickets TEXT,
+                price TEXT,
+                tickets_num INT,
+                min_price INT,
+                max_price INT
+            )
+            """
+    cursor.execute(query_performances)
+
+    query_notifications = """
+            CREATE TABLE bth_notifications (
+                date TEXT NOT NULL,
+                time TEXT NOT NULL,
+                name TEXT NOT NULL,
+                message TEXT NOT NULL
+            )
+            """
+    cursor.execute(query_notifications)
 except:
     Error
 
